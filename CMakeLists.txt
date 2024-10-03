@@ -3,4 +3,5 @@ project(GoldLabs C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(GoldLabs Lab1/task_1/main.c)
+add_executable(GoldLabs Lab1/task_1/main.c
+)
