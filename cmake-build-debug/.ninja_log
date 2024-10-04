@@ -1,13 +1,9 @@
 # ninja log v6
-4	98	7496901098715663	CMakeFiles/GoldLabs.dir/Lab1/task_3/task3.c.obj	4fd45a789354fcd2
-4	107	7496902515684491	GoldLabs.exe	dbf83a3285a1eed8
+4	97	7497643921149222	CMakeFiles/GoldLabs.dir/Lab1/task_3/task3.c.obj	4fd45a789354fcd2
+98	200	7497643922095407	GoldLabs.exe	dbf83a3285a1eed8
 2	77	7490437031710281	CMakeFiles/GoldLabs.dir/main.c.obj	4b32603666da5435
 4	79	7492169049464146	CMakeFiles/GoldLabs.dir/Lab1_1/main.c.obj	a036b110b1b56c06
-1	185	7496902596135770	build.ninja	59677ad1a26967a7
+1	185	7497666575458071	build.ninja	59677ad1a26967a7
 4	90	7496894482641073	CMakeFiles/GoldLabs.dir/Lab1/task_1/main.c.obj	9713dd7c242d5521
 7	211	7495128761701854	CMakeFiles/GoldLabs.dir/Lab1/task_3/main.c.obj	b4b7f3f6b5b023c0
-4	45	7496902259364139	CMakeFiles/GoldLabs.dir/Lab1/task_1/task1.c.obj	924ad77e676faf7d
-4	140	7496942336394974	CMakeFiles/GoldLabs.dir/Lab1/task_3/task3.c.obj	4fd45a789354fcd2
-141	244	7496942337773601	GoldLabs.exe	dbf83a3285a1eed8
-4	89	7496943845635874	CMakeFiles/GoldLabs.dir/Lab1/task_3/task3.c.obj	4fd45a789354fcd2
-89	191	7496943846486166	GoldLabs.exe	dbf83a3285a1eed8
+2	88	7497576350690761	CMakeFiles/GoldLabs.dir/Lab1/task_1/task1.c.obj	924ad77e676faf7d

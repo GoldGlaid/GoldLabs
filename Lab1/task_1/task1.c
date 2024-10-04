@@ -28,7 +28,7 @@ long long int artificial_pow(long long int x, int degree) {
 }
 
 // Функция перевода из строчного представления в числовое, проверка на некоторые условия
-int from_str_to_int(const char *argv, long long int *x, int base) {
+long long int from_str_to_int(const char *argv, long long int *x, int base) {
     char *end_p;
     long long num = strtoll(argv, &end_p, base);
 
@@ -156,11 +156,11 @@ int main(int argc, char *argv[]) {
             return INVALID_NUMBER;
         }
         if (result == ZERO_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be greater than 0\n");
+            printf("ERROR: ZERO_NUMBER. The number must be greater than 0\n");
             return ZERO_NUMBER;
         }
         if (result == NEGATIVE_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be non-negative\n");
+            printf("ERROR: NEGATIVE_NUMBER. The number must be non-negative\n");
             return NEGATIVE_NUMBER;
         }
         int a = 0;
@@ -169,15 +169,17 @@ int main(int argc, char *argv[]) {
             printf("%d\n", a);
         }
 
+        return OK;
+
         // Флаг -p определить, является ли число x простым; является ли x составным;
     } else if (argv[1][1] == 'p') {
         const int result = flag_P(x);
         if (result == ZERO_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be greater than 0\n");
+            printf("ERROR: ZERO_NUMBER. The number must be greater than 0\n");
             return ZERO_NUMBER;
         }
         if (result == NEGATIVE_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be non-negative\n");
+            printf("ERROR: NEGATIVE_NUMBER. The number must be non-negative\n");
             return NEGATIVE_NUMBER;
         }
         if (result) {
@@ -185,6 +187,7 @@ int main(int argc, char *argv[]) {
         } else {
             printf("The number is simple\n");
         }
+        return OK;
 
         // Флаг -s разделить число x на отдельные цифры системы счисления с
         // основанием 16 и вывести отдельно каждую цифру числа, разделяя их
@@ -204,6 +207,8 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
 
+        return OK;
+
         // -e вывести таблицу степеней (для всех показателей в диапазоне от 1 до x)
         // оснований от 1 до 10; для этого флага работает ограничение на вводимое
         // число: x должен быть не больше 10;
@@ -214,11 +219,11 @@ int main(int argc, char *argv[]) {
             return INVALID_NUMBER;
         }
         if (result == ZERO_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be greater than 0\n");
+            printf("ERROR: ZERO_NUMBER. The number must be greater than 0\n");
             return ZERO_NUMBER;
         }
         if (result == NEGATIVE_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be non-negative\n");
+            printf("ERROR: NEGATIVE_NUMBER. The number must be non-negative\n");
             return NEGATIVE_NUMBER;
         }
 
@@ -246,15 +251,17 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
 
+        return OK;
+
         // Флаг -a вычислить сумму всех натуральных чисел от 1 до x и вывести полученное значение в консоль;
     } else if (argv[1][1] == 'a') {
         const long long int result = flag_A(x);
         if (result == ZERO_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be greater than 0\n");
+            printf("ERROR: ZERO_NUMBER. The number must be greater than 0\n");
             return ZERO_NUMBER;
         }
         if (result == NEGATIVE_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be non-negative\n");
+            printf("ERROR: NEGATIVE_NUMBER. The number must be non-negative\n");
             return NEGATIVE_NUMBER;
         }
         if (result == ERROR_OVERFLOW) {
@@ -263,11 +270,13 @@ int main(int argc, char *argv[]) {
         }
         printf("Sum: %lli\n", result);
 
+        return OK;
+
         // Флаг -f вычислить факториал x и вывести полученное значение в консоль
     } else if (argv[1][1] == 'f') {
         const long long int result = flag_F(x);
         if (result == NEGATIVE_NUMBER) {
-            printf("ERROR: INVALID_NUMBER. The number must be non-negative\n");
+            printf("ERROR: NEGATIVE_NUMBER. The number must be non-negative\n");
             return NEGATIVE_NUMBER;
         }
         if (result == ERROR_OVERFLOW) {
@@ -275,6 +284,8 @@ int main(int argc, char *argv[]) {
             return ERROR_OVERFLOW;
         }
         printf("Factorial number: %lli\n", result);
+
+        return OK;
     } else {
         printf("ERROR: INVALID_FLAG\n");
         return INVALID_FLAG;
