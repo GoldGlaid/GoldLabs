@@ -1,9 +1,10 @@
-#include <inttypes.h>
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+
 
 typedef enum STATE_ERRORS {
     OK,
@@ -82,12 +83,12 @@ int x_multiple_y(long long int x, long long int y) {
 }
 
 int finding_the_sides_of_an_isosceles_triangle(long double a, long double b, long double c, long double eps) {
-    if (!(fabsl(b) < HUGE_VALL / fabsl(b)) &&
-          (fabsl(a) < HUGE_VALL / fabsl(a)) &&
-          (fabsl(c) < HUGE_VALL / fabsl(c)) &&
-          (fabsl(b * b) < HUGE_VALL - fabsl(c * c)) &&
-          (fabsl(a * a) < HUGE_VALL - fabsl(c * c)) &&
-          (fabsl(b * b) < HUGE_VALL - fabsl(a * a))) {
+    if (!((fabsl(b) < HUGE_VALL / fabsl(b)) &&
+        (fabsl(a) < HUGE_VALL / fabsl(a)) &&
+        (fabsl(c) < HUGE_VALL / fabsl(c)) &&
+        (fabsl(b * b) < HUGE_VALL - fabsl(c * c)) &&
+        (fabsl(a * a) < HUGE_VALL - fabsl(c * c)) &&
+        (fabsl(b * b) < HUGE_VALL - fabsl(a * a)))) {
         return ERROR_OVERFLOW;
     }
 
@@ -107,7 +108,9 @@ int finding_the_sides_of_an_isosceles_triangle(long double a, long double b, lon
 
 struct value_case func_quadratic_equation(long double a, long double b, long double c, long double epsilon) {
     struct value_case v_c = {0, 0, false, false};
-
+    if (a == 0.0 || b == 0.0) {
+        return v_c;
+    }
     if (fabsl(a) < epsilon) {
         return v_c;
     }
@@ -188,6 +191,10 @@ int main(int argc, char *argv[]) {
 
                         printf("Combination of coefficients: a = %Lf, b = %Lf, c = %Lf\n", pack[i], pack[j], pack[k]);
                         struct value_case result = func_quadratic_equation(pack[i], pack[j], pack[k], epsilon);
+                        if (!result.exist && !result.normal && result.x1 == 0 && result.x2 == 0) {
+                            printf("ERROR: INVALID_NUMBER\n");
+                            return INVALID_NUMBER;
+                        }
                         if (!result.exist && !result.normal && result.x1 == HUGE_VALL && result.x2 == HUGE_VALL) {
                             printf("ERROR: ERROR_OVERFLOW.\n");
                             return ERROR_OVERFLOW;
@@ -205,12 +212,11 @@ int main(int argc, char *argv[]) {
             return OK;
 
         case 'm':
-            long long int x, y;
             if (argc != 4) {
                 printf("ERROR: INVALID_INPUT.\n");
                 return INVALID_INPUT;
             }
-
+            long long int x, y;
             if (str_to_int(argv[2], &x) || str_to_int(argv[3], &y) != OK) {
                 printf("ERROR: INVALID_NUMBER. You could have made a mistake when entering the numbers.\n");
                 return INVALID_NUMBER;
@@ -265,7 +271,6 @@ int main(int argc, char *argv[]) {
 
         default:
             printf("ERROR: INVALID_FLAG.\n");
-            return INVALID_FLAG;;
+            return INVALID_FLAG;
     }
 }
-//
