@@ -9,7 +9,7 @@
 typedef enum STATE_ERRORS {
     OK,
     INVALID_INPUT = -1,
-    INVALID_FLAG = -2,
+    INVALID_FLAG __attribute__((unused)) = -2,
     INVALID_NUMBER = -3,
     ERROR_OVERFLOW = -4,
     ZERO_NUMBER = -5,
