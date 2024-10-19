@@ -84,11 +84,6 @@ void replace_symbols_xcode(FILE *input, FILE *output) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 3 || argc > 4) {
-        printf("ERROR: INVALID_INPUT.\n");
-        return INVALID_INPUT;
-    }
-
     if (!(argv[1][0] == '-' || argv[1][0] == '/') && (argv[1][2] == '\0' || argv[1][3] == '\0')) {
         printf("ERROR: INVALID_FLAG.\n");
         return INVALID_FLAG;
@@ -106,7 +101,12 @@ int main(int argc, char *argv[]) {
             return INVALID_INPUT;
         }
     } else {
-        flag = argv[1][1];
+        if (argc == 3) {
+            flag = argv[1][1];
+        } else {
+            printf("ERROR: INVALID_INPUT.\n");
+            return INVALID_INPUT;
+        }
     }
 
     // Открываем input файл
@@ -121,10 +121,43 @@ int main(int argc, char *argv[]) {
 
     // Открываем output файл (При ошибке закрываем input файл)
     if (n_flag) {
+
+        // Обработка одинаковых файлов
         if (strcmp(argv[2], argv[3]) == 0) {
             fclose(input_file);
             printf("ERROR: INVALID_FILE. The input file is equal to the output file");
             return INVALID_FILE;
+        }
+
+        // Обработка одинаковых файлов
+        if (strrchr(argv[2], '\\')) {
+            if (strrchr(argv[3], '\\')) {
+                if (strcmp(strrchr(argv[2], '\\') + 1, strrchr(argv[3], '\\') + 1) == 0) {
+                    fclose(input_file);
+                    printf("ERROR: INVALID_FILE. The input file is equal to the output file");
+                    return INVALID_FILE;
+                }
+            } else {
+                if (strcmp(strrchr(argv[2], '\\') + 1, argv[3]) == 0) {
+                    fclose(input_file);
+                    printf("ERROR: INVALID_FILE. The input file is equal to the output file");
+                    return INVALID_FILE;
+                }
+            }
+        } else {
+            if (strrchr(argv[3], '\\')) {
+                if (strcmp(argv[2], strrchr(argv[3], '\\') + 1) == 0) {
+                    fclose(input_file);
+                    printf("ERROR: INVALID_FILE. The input file is equal to the output file");
+                    return INVALID_FILE;
+                }
+            } else {
+                if (strcmp(argv[2], argv[3]) == 0) {
+                    fclose(input_file);
+                    printf("ERROR: INVALID_FILE. The input file is equal to the output file");
+                    return INVALID_FILE;
+                }
+            }
         }
 
         output_file = fopen(argv[3], "w");
@@ -145,6 +178,7 @@ int main(int argc, char *argv[]) {
         // Возможная ошибка связанная с /. Может быть разделитель: 2x Обратный слеш
         char *last_slash = strrchr(argv[2], '\\');
         if (last_slash == NULL) {
+            outfile_path[0] = '\0';
             strcat(outfile_path, "out_");
             strcat(outfile_path, argv[2]);
             outfile_path[strlen(argv[2]) + strlen("out_") + 1] = '\0';
@@ -153,7 +187,7 @@ int main(int argc, char *argv[]) {
             unsigned long long int path_without_name = strlen(argv[2]) - strlen(old_name);
 
             strncpy(outfile_path, argv[2], path_without_name);
-            outfile_path[path_without_name] = '\000';
+            outfile_path[path_without_name] = '\0';
             strcat(outfile_path, "out_");
             strcat(outfile_path, old_name);
             outfile_path[strlen(argv[2]) + strlen("out_") + 1] = '\0';
