@@ -110,11 +110,11 @@ int main(int argc, char *argv[]) {
             number[counter_n] = (char) symbol;
             counter_n++;
 
-            if (symbol >= '0' && symbol <= '9') {
+            if (isdigit(symbol)) {
                 if (symbol - 47 > max_base) {
                     max_base = symbol - 47;
                 }
-            } else if ((symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z')) {
+            } else if (isalpha(symbol)) {
                 if (symbol - 86 > max_base) {
                     max_base = symbol - 86;
                 }
