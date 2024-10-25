@@ -152,6 +152,8 @@ int main() {
 
     print_frame(100);
 
+
+//    Тесты функции geometric_mean
     print_frame(100);
     printf("TEST#1[geometric_mean]\n");
 
