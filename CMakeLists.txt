@@ -4,5 +4,6 @@ project(GoldLabs C)
 set(CMAKE_C_STANDARD 23)
 
 add_executable(GoldLabs
-        lab2/task_7/task7.c
+        lab3/task_3/task3.c
+        lab3/task_5/task5.c
 )

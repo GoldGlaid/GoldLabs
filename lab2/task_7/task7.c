@@ -111,6 +111,7 @@ int main() {
         printf("ERROR: PROBLEM_WITH_EPSILON\n");
     }
     result = 0.0;
+
     //    Ожидаемый результат: около 2.718.
     if (dichotomy(&result, 2, 4, 0.001, func5) == OK) {
         printf("%f\n", result);
