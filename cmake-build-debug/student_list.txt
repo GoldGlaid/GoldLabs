@@ -1,0 +1,5 @@
+2 lego bug A1 22222
+4 leg bug B2 22224
+3 egor bug A1 22222
+5 oleg bug D3 55555
+1 oleg bug A6 22222

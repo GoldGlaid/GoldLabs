@@ -176,8 +176,8 @@ error add_employees(Employee **out_data, FILE *input_file, int *size) {
 
     while ((args_counter = fscanf(input_file, "%u%s%s%lf\n",
                                   &(data)[*size].id,
-                                  &(data)[*size].name,
-                                  &(data)[*size].surname,
+                                  (data)[*size].name,
+                                  (data)[*size].surname,
                                   &(data)[*size].salary)) == 4) {
 
         if (check_input_data((data)[*size]) == INVALID_INPUT) {
