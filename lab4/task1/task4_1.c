@@ -14,12 +14,13 @@ free((x)); \
 typedef struct macro {
     char *key;
     char *value;
+    int numIntoChain;
     struct macro *next;
 } macro;
 
 typedef struct hashtable {
     int size;
-    struct macro **table;
+    macro **table;
 } hashtable;
 
 typedef enum {
@@ -35,13 +36,19 @@ typedef enum {
 
 state simulate_files(char *path_file1, char *path_file2);
 
-state add_defines(macro ***out_data, FILE *input_file);
+state add_defines(hashtable **out_data, FILE *input_file);
 
-unsigned int hash(char *key, int table_size);
+state get_word(FILE *file, char **outData, char *symbol);
 
-void insert(struct hashtable *ht, char *key, char *value);
+unsigned int hash(char *key, int tableSize);
 
-void rehash(struct hashtable *ht);
+state insert(hashtable *ht, char *key, char *value);
+
+void rehash(hashtable *ht);
+
+void freeElement(macro *element);
+
+void freeHashTable(hashtable *ht);
 
 
 int main(int argc, char *argv[]) {
@@ -88,14 +95,14 @@ int main(int argc, char *argv[]) {
 
 
     printf("%d", hash("MAX_VALUE", 128));
-    hashtable ht;
+    hashtable *ht;
 
     // запись из файла в массив
-    state result = add_defines(&ht.table, input_file);
+    state result = add_defines(&ht, input_file);
     if (result == MEMORY_ERROR) {
         fclose(input_file);
         fclose(output_file);
-//        free_all(ht.table, size);
+        freeHashTable(ht);
         printf("ERROR: MEMORY_ERROR.\n");
         return MEMORY_ERROR;
     }
@@ -136,50 +143,87 @@ state simulate_files(char *path_file1, char *path_file2) {
 }
 
 
-unsigned int hash(char *key, int table_size) {
+unsigned int hash(char *key, int tableSize) {
     unsigned int hash_value = 0;
     while (*key) {
-        hash_value = (hash_value * 62 + (*key - '0')) % table_size;
+        hash_value = (hash_value * 62 + (*key - '0')) % tableSize;
         key++;
     }
     return hash_value;
 }
 
 
-void insert(hashtable *ht, char *key, char *value) {
-    unsigned int index = hash(key, ht->size);
-    macro *new_macro = (macro *) malloc(sizeof(macro));
+state insert(hashtable *ht, char *key, char *value) {
+    unsigned int index;
+    macro *new_macro;
+//    macro *tableElement;
+
+    index = hash(key, ht->size);
+    new_macro = (macro *) malloc(sizeof(macro));
+    if (new_macro == NULL) {
+        return MEMORY_ERROR;
+    }
     new_macro->key = key;
     new_macro->value = value;
+
+//    tableElement
+    if (*ht->table[index] == NULL) {
+        new_macro->numIntoChain = 0;
+    } else {
+        new_macro->numIntoChain = ++(ht->table[index]->numIntoChain);
+    }
     new_macro->next = ht->table[index];  // добавляем в начало цепочки
+
     ht->table[index] = new_macro;
 }
 
-void rehash(hashtable *ht) {
-    int old_size = ht->size;
-    ht->size *= 2;  // Увеличиваем размер таблицы
-    macro **new_table = (macro **) malloc(ht->size * sizeof(macro *));
+//void rehash(hashtable *ht) {
+//    int old_size = ht->size;
+//    ht->size *= 2;  // Увеличиваем размер таблицы
+//    macro **new_table = (macro **) malloc(ht->size * sizeof(macro *));
+//
+//    // Инициализация новой таблицы
+//    for (int i = 0; i < ht->size; i++) {
+//        new_table[i] = NULL;
+//    }
+//
+//    // Перераспределяем все элементы в новую таблицу
+//    for (int i = 0; i < old_size; i++) {
+//        macro *current = ht->table[i];
+//        while (current != NULL) {
+//            insert(new_table, current->key, current->value);  // добавляем в новую таблицу
+//            current = current->next;
+//        }
+//    }
+//
+//    // Освобождаем старую таблицу и обновляем указатель
+//    free(ht->table);
+//    ht->table = new_table;
+//}
 
-    // Инициализация новой таблицы
-    for (int i = 0; i < ht->size; i++) {
-        new_table[i] = NULL;
-    }
-
-    // Перераспределяем все элементы в новую таблицу
-    for (int i = 0; i < old_size; i++) {
-        macro *current = ht->table[i];
-        while (current != NULL) {
-            insert(new_table, current->key, current->value);  // добавляем в новую таблицу
-            current = current->next;
-        }
-    }
-
-    // Освобождаем старую таблицу и обновляем указатель
-    free(ht->table);
-    ht->table = new_table;
+void freeElement(macro *element) {
+    FREE_AND_NULL(element->key)
+    FREE_AND_NULL(element->value)
+    FREE_AND_NULL(element)
 }
 
-state add_defines(macro ***out_data, FILE *input_file) {
+void freeHashTable(hashtable *ht) {
+    macro *element;
+    macro *ptr_next = NULL;
+
+    for (int i = 0; i < ht->size; ++i) {
+        element = ht->table[i];
+        do {
+            ptr_next = element->next;
+            freeElement(element);
+        } while (ptr_next != NULL);
+    }
+
+    FREE_AND_NULL(ht->table)
+    FREE_AND_NULL(ht);
+}
+
+state add_defines(hashtable **out_data, FILE *input_file) {
 
     hashtable *ht = (hashtable *) malloc(sizeof(hashtable));
     if (ht == NULL) {
@@ -187,48 +231,108 @@ state add_defines(macro ***out_data, FILE *input_file) {
     }
     ht->size = HASHSIZE;
 
-    ht->table = (macro **) malloc(sizeof(macro));
+    ht->table = (macro **) malloc(sizeof(macro **));
     if (ht->table == NULL) {
         FREE_AND_NULL(ht)
         return MEMORY_ERROR;
     }
 
     while (!feof(input_file)) {
-        char *key, *value, *define;
+        char *key, *value, *word;
+        state result = 0;
+        char symbol = '0';
 
+        word = (char *) malloc(sizeof(char) * 128);
         key = (char *) malloc(sizeof(char) * 128);
         value = (char *) malloc(sizeof(char) * 128);
-        define = (char *) malloc(sizeof(char) * (7 + 1));
 
-        if (key == NULL || value == NULL || define == NULL) {
+        if (key == NULL || value == NULL || word == NULL) {
             FREE_AND_NULL(key)
             FREE_AND_NULL(value)
-            FREE_AND_NULL(define)
-            for (int i = 0; i < ht->size; ++i) {
-                FREE_AND_NULL(ht->table[i]->key)
-                FREE_AND_NULL(ht->table[i]->value)
-            }
-            FREE_AND_NULL(ht)
+            FREE_AND_NULL(word)
+            freeHashTable(ht);
             return MEMORY_ERROR;
         }
+        while (symbol != EOF) {
+            result = get_word(input_file, &word, &symbol);
+            if (result == MEMORY_ERROR) {
+                FREE_AND_NULL(key)
+                FREE_AND_NULL(value)
+                FREE_AND_NULL(word)
+                freeHashTable(ht);
+                return MEMORY_ERROR;
+            }
+            if (strcmp(word, "#define") != 0)
+                break;
 
-        fscanf(input_file, "%s%s%s", define, key, value);
-        while (strcmp("#define", define) == 0) {
-            insert(ht, key, value);
+            while (symbol != '\n') {
+                result = get_word(input_file, &word, &symbol);
+                if (result == MEMORY_ERROR) {
+                    FREE_AND_NULL(key)
+                    FREE_AND_NULL(value)
+                    FREE_AND_NULL(word)
+                    freeHashTable(ht);
+                    return MEMORY_ERROR;
+                }
+                key = word;
 
-            key = (char *) malloc(sizeof(char) * 128);
-            value = (char *) malloc(sizeof(char) * 128);
-            define = (char *) malloc(sizeof(char) * (7 + 1));
-            fscanf(input_file, "%s%s%s", define, key, value);
+                result = get_word(input_file, &word, &symbol);
+                if (result == MEMORY_ERROR) {
+                    FREE_AND_NULL(key)
+                    FREE_AND_NULL(value)
+                    FREE_AND_NULL(word)
+                    freeHashTable(ht);
+                    return MEMORY_ERROR;
+                }
+
+                value = word;
+                insert(ht, key, value);
+            }
         }
+
+
+        *out_data = ht;
+        return OK;
+    }
+}
+
+
+state get_word(FILE *file, char **outData, char *symbol) {
+    int size = 0;
+    int capacity = 2;
+
+    char *word = (char *) malloc(sizeof(char) * capacity);
+
+    if (word == NULL) {
+        return MEMORY_ERROR;
     }
 
-    *out_data = ht->table;
+    *symbol = (char) getc(file);
+
+    while (*symbol != '\n' && *symbol != EOF && *symbol != ' ') {
+        // Проверка на переполнение
+        if (size == capacity) {
+            capacity *= 2;
+            char *buffer_realloc = (char *) realloc(word, sizeof(char) * capacity);
+            if (buffer_realloc == NULL) {
+                FREE_AND_NULL(word)
+                return MEMORY_ERROR;
+            }
+            word = buffer_realloc;
+        }
+        word[size] = *symbol;
+        size++;
+
+        *symbol = (char) getc(file);
+    }
+    print
+    word[size] = '\0';
+    *outData = word;
+
     return OK;
 }
 
-//TODO придумать рекурсивную функцию по очищению цепочек
-//void free_all(hashtable *ht) {
-//
-//    FREE_AND_NULL(stud_array)
-//}
+
+state get_define(FILE *file, char **outData, char *symbol) {
+
+}
