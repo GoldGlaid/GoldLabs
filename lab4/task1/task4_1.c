@@ -10,6 +10,7 @@
 typedef struct macro {
     char *key;
     char *value;
+    char *fullHash;
     struct macro *next;
 } macro;
 
@@ -178,9 +179,9 @@ state add_defines(hashtable **out_data, FILE *input_file) {
 
     while (!feof(input_file)) {
 
-        define_word = malloc(sizeof(char) * capacity);
-        key = malloc(sizeof(char) * capacity); //утечка
-        value = malloc(sizeof(char) * capacity); //утечка
+        define_word = (char *) malloc(sizeof(char) * capacity);
+        key = (char *) malloc(sizeof(char) * capacity);
+        value = (char *) malloc(sizeof(char) * capacity);
 
         if (define_word == NULL || key == NULL || value == NULL) {
             free(define_word);
@@ -319,6 +320,7 @@ hashtable *create_hashtable(int size) {
 void freeElement(macro *element) {
     free(element->key);
     free(element->value);
+    free(element->fullHash);
     free(element);
 }
 
@@ -341,7 +343,6 @@ void freeHashTable(hashtable *ht) {
     free(ht);
 }
 
-
 unsigned int hash(char const *key, int tableSize) {
     unsigned int hash_value = 0;
     while (*key) {
@@ -357,7 +358,6 @@ unsigned int hash(char const *key, int tableSize) {
     }
     return hash_value % tableSize;
 }
-
 
 state insert(hashtable *ht, char **key, char **value) {
     unsigned int index = hash(*key, ht->size);
@@ -375,6 +375,7 @@ state insert(hashtable *ht, char **key, char **value) {
 
     return OK;
 }
+
 
 state rehash(hashtable *ht) {
     int old_size;

@@ -1,3 +1,9 @@
 /mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/GoldLabs.dir
+/mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/lab1.5.dir
+/mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/lab1.9_1.dir
+/mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/lab1.9_2.dir
+/mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/lab2.9.dir
+/mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/lab5.2.dir
+/mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/lab5.3.dir
 /mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/edit_cache.dir
 /mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug/CMakeFiles/rebuild_cache.dir
