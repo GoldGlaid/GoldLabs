@@ -1,8 +1,4 @@
 /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" -S /mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs -B /mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug
 -- Configuring done
-CMake Error: Cannot determine link language for target "lab5.2".
-CMake Error: CMake can not determine linker language for target: lab5.2
-CMake Error: Cannot determine link language for target "lab5.3".
-CMake Error: CMake can not determine linker language for target: lab5.3
 -- Generating done
-CMake Generate step failed.  Build files cannot be regenerated correctly.
+-- Build files have been written to: /mnt/c/Users/GoldGlaid/CLionProjects/GoldLabs/cmake-build-debug
